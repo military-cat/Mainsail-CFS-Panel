@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.verification/
+.release-work/
+*.zip
+node_modules/
+installer-fixture-*/
+panel-build-fixture-*/
+.DS_Store

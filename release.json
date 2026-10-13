@@ -1,0 +1,16 @@
+{
+  "assets": {
+    "cfs-panel.js": "f2939bbc6d2ed922121e4064860952bae5b94ef7bd5a36c4d88787fba384fc93",
+    "cfs.png": "e0f41ba2551bb354c1a31849c6f4233a0c79bb798199e299a378631d783a78e6"
+  },
+  "languages": [
+    "en",
+    "ko",
+    "ja",
+    "zh",
+    "es"
+  ],
+  "project": "Mainsail-CFS-Panel",
+  "schema": 1,
+  "version": "0.1.0"
+}
