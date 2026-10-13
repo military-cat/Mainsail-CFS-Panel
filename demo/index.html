@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CFSail · Demo</title>
+<style>
+  :root { color-scheme: dark; font-family: system-ui, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif; }
+  body { margin: 0; background: #111315; color: #e7e9ec; }
+  header, main { width: min(680px, calc(100% - 32px)); margin: 24px auto; }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  h1 { font-size: 24px; margin: 0; flex: 1; }
+  label { font-size: 13px; color: #bac2cd; }
+  select { font: inherit; padding: 7px 10px; background: #25292e; color: inherit; border: 1px solid #525b65; border-radius: 6px; }
+  p { flex-basis: 100%; margin: 0; color: #aeb8c4; font-size: 13px; line-height: 1.6; }
+</style>
+<header>
+  <h1>CFSail</h1>
+  <label for="demo-language" id="language-label">Language</label>
+  <select id="demo-language">
+    <option value="en">English</option>
+    <option value="ko">한국어</option>
+    <option value="ja">日本語</option>
+    <option value="zh">简体中文</option>
+    <option value="es">Español</option>
+  </select>
+  <p id="demo-note"></p>
+</header>
+<main><div data-cfsail-mount></div></main>
+<script>
+  const demoCopy = {
+    en: ['Language', 'This is a simulated printer. Changes stay in this demo.'],
+    ko: ['언어', '모의 프린터 화면입니다. 변경 사항은 이 데모에만 적용됩니다.'],
+    ja: ['言語', 'プリンターのデモ画面です。変更はこのデモ内にのみ反映されます。'],
+    zh: ['语言', '这是模拟打印机界面。更改仅在此演示中生效。'],
+    es: ['Idioma', 'Esta es una impresora simulada. Los cambios solo se aplican a esta demostración.']
+  };
+  const selected = new URLSearchParams(location.search).get('lang');
+  const demoLanguage = Object.hasOwn(demoCopy, selected) ? selected : 'en';
+  document.documentElement.lang = demoLanguage;
+  document.getElementById('language-label').textContent = demoCopy[demoLanguage][0];
+  document.getElementById('demo-note').textContent = demoCopy[demoLanguage][1];
+  const chooser = document.getElementById('demo-language');
+  chooser.value = demoLanguage;
+  chooser.onchange = () => { location.search = '?lang=' + chooser.value; };
+  const panelScript = document.createElement('script');
+  panelScript.src = '/assets/cfs-panel.js';
+  panelScript.dataset.lang = demoLanguage;
+  panelScript.dataset.wsUrl = 'ws://' + location.host + '/mock-cfs';
+  document.body.append(panelScript);
+</script>
+</html>

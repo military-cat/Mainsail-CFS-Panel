@@ -1,0 +1,285 @@
+{
+  "cfsConnect": 1,
+  "state": 0,
+  "feedState": 0,
+  "nozzleTemp": "29.2",
+  "targetNozzleTemp": 0,
+  "err": {
+    "key": 0,
+    "value": ""
+  },
+  "boxsInfo": {
+    "materialBoxs": [
+      {
+        "id": 0,
+        "state": 0,
+        "type": 1,
+        "materials": [
+          {
+            "id": 0,
+            "vendor": "Generic",
+            "type": "PETG",
+            "name": "Generic PETG",
+            "rfid": "00003",
+            "color": "#0ff8800",
+            "minTemp": 220,
+            "maxTemp": 270,
+            "pressure": 0.1,
+            "state": 1,
+            "selected": 0,
+            "editStatus": 1,
+            "percent": 100
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "type": 0,
+        "state": 1,
+        "temp": 29,
+        "humidity": 25,
+        "materials": [
+          {
+            "id": 0,
+            "vendor": "Generic",
+            "type": "PLA",
+            "name": "Generic PLA",
+            "rfid": "00001",
+            "color": "#034c759",
+            "minTemp": 190,
+            "maxTemp": 240,
+            "pressure": 0.04,
+            "state": 1,
+            "selected": 1,
+            "editStatus": 1,
+            "percent": 100
+          },
+          {
+            "id": 1,
+            "vendor": "Generic",
+            "type": "PLA",
+            "name": "Generic PLA",
+            "rfid": "00001",
+            "color": "#0ffffff",
+            "minTemp": 190,
+            "maxTemp": 240,
+            "pressure": 0.04,
+            "state": 1,
+            "selected": 0,
+            "editStatus": 1,
+            "percent": 100
+          },
+          {
+            "id": 2,
+            "vendor": "Generic",
+            "type": "PLA",
+            "name": "Generic PLA",
+            "rfid": "00001",
+            "color": "#0000000",
+            "minTemp": 190,
+            "maxTemp": 240,
+            "pressure": 0.04,
+            "state": 1,
+            "selected": 0,
+            "editStatus": 1,
+            "percent": 100
+          },
+          {
+            "id": 3,
+            "vendor": "Generic",
+            "type": "PLA",
+            "name": "Generic PLA",
+            "rfid": "00001",
+            "color": "#0ff3b30",
+            "minTemp": 190,
+            "maxTemp": 240,
+            "pressure": 0.04,
+            "state": 1,
+            "selected": 0,
+            "editStatus": 1,
+            "percent": 100
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "type": 0,
+        "state": 1,
+        "temp": 31,
+        "humidity": 33,
+        "materials": [
+          {
+            "id": 0,
+            "vendor": "Generic",
+            "type": "PETG",
+            "name": "Generic PETG",
+            "rfid": "00003",
+            "color": "#000aaff",
+            "minTemp": 220,
+            "maxTemp": 270,
+            "pressure": 0.1,
+            "state": 1,
+            "selected": 0,
+            "editStatus": 1,
+            "percent": 100
+          },
+          {
+            "id": 1,
+            "vendor": "Generic",
+            "type": "PETG",
+            "name": "Generic PETG",
+            "rfid": "00003",
+            "color": "#0ff8800",
+            "minTemp": 220,
+            "maxTemp": 270,
+            "pressure": 0.1,
+            "state": 1,
+            "selected": 0,
+            "editStatus": 1,
+            "percent": 100
+          },
+          {
+            "id": 2,
+            "vendor": "Generic",
+            "type": "PETG",
+            "name": "Generic PETG",
+            "rfid": "00003",
+            "color": "#08000ff",
+            "minTemp": 220,
+            "maxTemp": 270,
+            "pressure": 0.1,
+            "state": 1,
+            "selected": 0,
+            "editStatus": 1,
+            "percent": 100
+          },
+          {
+            "id": 3,
+            "vendor": "Generic",
+            "type": "PETG",
+            "name": "Generic PETG",
+            "rfid": "00003",
+            "color": "#0ffffff",
+            "minTemp": 220,
+            "maxTemp": 270,
+            "pressure": 0.1,
+            "state": 1,
+            "selected": 0,
+            "editStatus": 1,
+            "percent": 100
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "type": 0,
+        "state": 1,
+        "temp": 35.2,
+        "humidity": 48,
+        "materials": [
+          {
+            "id": 0,
+            "vendor": "Generic",
+            "type": "PETG",
+            "name": "Generic PETG",
+            "rfid": "00003",
+            "color": "#000aaff",
+            "minTemp": 220,
+            "maxTemp": 270,
+            "pressure": 0.1,
+            "state": 1,
+            "selected": 0,
+            "editStatus": 1,
+            "percent": 100
+          },
+          {
+            "id": 1,
+            "vendor": "Generic",
+            "type": "PETG",
+            "name": "Generic PETG",
+            "rfid": "00003",
+            "color": "#0ff8800",
+            "minTemp": 220,
+            "maxTemp": 270,
+            "pressure": 0.1,
+            "state": 1,
+            "selected": 0,
+            "editStatus": 1,
+            "percent": 100
+          },
+          {
+            "id": 2,
+            "vendor": "Generic",
+            "type": "PETG",
+            "name": "Generic PETG",
+            "rfid": "00003",
+            "color": "#08000ff",
+            "minTemp": 220,
+            "maxTemp": 270,
+            "pressure": 0.1,
+            "state": 1,
+            "selected": 0,
+            "editStatus": 1,
+            "percent": 100
+          },
+          {
+            "id": 3,
+            "vendor": "Generic",
+            "type": "PETG",
+            "name": "Generic PETG",
+            "rfid": "00003",
+            "color": "#0ffffff",
+            "minTemp": 220,
+            "maxTemp": 270,
+            "pressure": 0.1,
+            "state": 1,
+            "selected": 0,
+            "editStatus": 1,
+            "percent": 100
+          }
+        ]
+      }
+    ]
+  },
+  "retMaterials": [
+    {
+      "base": {
+        "id": "00001",
+        "brand": "Generic",
+        "name": "Generic PLA",
+        "meterialType": "PLA",
+        "minTemp": 190,
+        "maxTemp": 240
+      },
+      "kvParam": {
+        "pressure_advance": "0.04"
+      }
+    },
+    {
+      "base": {
+        "id": "00003",
+        "brand": "Generic",
+        "name": "Generic PETG",
+        "meterialType": "PETG",
+        "minTemp": 220,
+        "maxTemp": 270
+      },
+      "kvParam": {
+        "pressure_advance": "0.1"
+      }
+    },
+    {
+      "base": {
+        "id": "00004",
+        "brand": "Generic",
+        "name": "Generic ABS",
+        "meterialType": "ABS",
+        "minTemp": 240,
+        "maxTemp": 280
+      },
+      "kvParam": {
+        "pressure_advance": "0.04"
+      }
+    }
+  ]
+}

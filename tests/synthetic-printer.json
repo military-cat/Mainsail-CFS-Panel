@@ -1,0 +1,97 @@
+{
+  "boxsInfo": {
+    "materialBoxs": [
+      {
+        "id": 1,
+        "type": 0,
+        "state": 1,
+        "temp": 24,
+        "humidity": 30,
+        "materials": [
+          {
+            "id": 0,
+            "state": 1,
+            "editStatus": 1,
+            "selected": 0,
+            "type": "PLA",
+            "color": "#0ffffff",
+            "name": "Generic PLA",
+            "vendor": "Generic",
+            "rfid": "00001",
+            "minTemp": 190,
+            "maxTemp": 240,
+            "pressure": 0.04
+          },
+          {
+            "id": 1,
+            "state": 2,
+            "editStatus": 0,
+            "selected": 0,
+            "type": "PLA",
+            "color": "#0ffffff",
+            "name": "Generic PLA",
+            "vendor": "Generic",
+            "rfid": "00001",
+            "minTemp": 190,
+            "maxTemp": 240,
+            "pressure": 0.04
+          },
+          {
+            "id": 2,
+            "state": 1,
+            "editStatus": 1,
+            "selected": 0,
+            "type": "PETG",
+            "color": "#0ff8800",
+            "name": "Generic PETG",
+            "vendor": "Generic",
+            "rfid": "00003",
+            "minTemp": 220,
+            "maxTemp": 270,
+            "pressure": 0.1
+          },
+          {
+            "id": 3,
+            "state": 1,
+            "editStatus": 2,
+            "selected": 0,
+            "type": "",
+            "color": "",
+            "name": "",
+            "vendor": ""
+          }
+        ]
+      }
+    ]
+  },
+  "retMaterials": [
+    {
+      "base": {
+        "id": "00001",
+        "brand": "Generic",
+        "name": "Generic PLA",
+        "meterialType": "PLA",
+        "minTemp": 190,
+        "maxTemp": 240
+      },
+      "kvParam": {
+        "pressure_advance": "0.04"
+      }
+    },
+    {
+      "base": {
+        "id": "00003",
+        "brand": "Generic",
+        "name": "Generic PETG",
+        "meterialType": "PETG",
+        "minTemp": 220,
+        "maxTemp": 270
+      },
+      "kvParam": {
+        "pressure_advance": "0.1"
+      }
+    }
+  ],
+  "state": 0,
+  "feedState": 0
+}
