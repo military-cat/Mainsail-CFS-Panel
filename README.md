@@ -38,6 +38,13 @@ The installer and panel support **English, 한국어, 日本語, 简体中文 an
 | <img src="docs/screenshots/multiple-cfs.png" width="300" alt="Tabs for CFS 1, CFS 2, CFS 3 and Ext."> | <img src="docs/screenshots/language-menu.png" width="204" alt="Language menu with Follow Mainsail and five manual languages"> |
 | Switch between detected CFS units. This screenshot shows the three-unit demo. | Follow Mainsail's language or choose one of five languages manually. |
 
+### During an actual print
+
+| Loaded filament and live status | Actions blocked while printing |
+| --- | --- |
+| <img src="docs/screenshots/printing-loaded-slot.png" width="480" alt="CFSail during printing with slot 1A outlined in green and live nozzle temperatures"> | <img src="docs/screenshots/printing-actions-blocked.png" width="423" alt="Filament 1C menu with Load, Unload and Edit disabled while printing"> |
+| Slot **1A** is reported as loaded into the extruder and highlighted in green. The footer shows printing status and current/target nozzle temperatures. | During printing, **Load**, **Unload** and **Edit type and color** are disabled, with an explanation below each action. |
+
 ## Install
 
 Download [**Mainsail-CFS-Panel-v0.1.0.zip**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.0/Mainsail-CFS-Panel-v0.1.0.zip) from the [**v0.1.0 release**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.0). This is the versioned installation package, including the prebuilt panel and translations.

@@ -25,6 +25,13 @@
 | <img src="docs/screenshots/multiple-cfs.png" width="300" alt="CFS 1, CFS 2, CFS 3와 Ext. 선택 탭"> | <img src="docs/screenshots/language-menu.png" width="204" alt="메인세일 언어 따라가기와 5개 언어를 선택하는 메뉴"> |
 | 감지된 CFS 사이를 전환합니다. 사진은 CFS 3개를 표시한 예시 화면입니다. | 메인세일 언어를 따라가거나 다섯 언어 중 하나를 직접 선택합니다. |
 
+### 실제 출력 중 사용 화면
+
+| 로딩된 필라멘트와 실시간 상태 | 출력 중 동작 제한 |
+| --- | --- |
+| <img src="docs/screenshots/printing-loaded-slot.png" width="480" alt="실제 출력 중 1A 슬롯이 초록색으로 강조되고 노즐 온도가 표시된 CFSail"> | <img src="docs/screenshots/printing-actions-blocked.png" width="423" alt="출력 중 로딩, 언로딩, 종류와 색상 수정이 비활성화된 1C 슬롯 메뉴"> |
+| 익스트루더에 로딩된 것으로 보고된 **1A** 슬롯을 초록색으로 강조합니다. 하단에는 출력 상태와 노즐의 현재·목표 온도를 표시합니다. | 출력 중에는 **로딩·언로딩·종류와 색상 수정**을 비활성화하고, 각 동작 아래에 제한 이유를 표시합니다. |
+
 ## 설치
 
 [**v0.1.0 릴리즈**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.0)의 [**Mainsail-CFS-Panel-v0.1.0.zip**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.0/Mainsail-CFS-Panel-v0.1.0.zip)을 사용합니다. 빌드된 패널과 번역이 포함된 버전별 설치 패키지입니다.
