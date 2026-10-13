@@ -8,6 +8,8 @@
 
 Select a detected CFS from the header tabs to view filament types, colors, the reported loaded filament and enclosure temperature/humidity. A green outline identifies filament reported as loaded into the extruder. Select a slot to open Load, Unload or Edit; unavailable actions show a reason. Status messages reflect the printer's reported activity, including operations started from its touchscreen.
 
+On a connected printer, CFSail displays the **actual CFS internal temperature (°C) and relative humidity (% RH)** reported by the CFS through the printer, and refreshes those readings while connected.
+
 The external spool's tab and name are always **Ext.**, in every language. Editable filaments can be assigned a printer-provided Generic material and color. A save is confirmed against the printer's response. External-spool loading/unloading remains on the printer touchscreen.
 
 ### What has been checked
@@ -26,7 +28,7 @@ The installer and panel support **English, 한국어, 日本語, 简体中文 an
 | CFS overview | Filament actions |
 | --- | --- |
 | <img src="docs/screenshots/cfs-overview.png" width="480" alt="CFS overview showing four filament slots, temperature and humidity"> | <img src="docs/screenshots/filament-actions.png" width="480" alt="Filament menu with Load, Unload and Edit type and color"> |
-| View slot types and colors, enclosure readings and printer status. | Select a slot to load, unload or edit it; unavailable actions explain why. |
+| View slot types and colors, actual CFS internal temperature (°C), relative humidity (% RH) and printer status. | Select a slot to load, unload or edit it; unavailable actions explain why. |
 
 | Type and color editor | External spool |
 | --- | --- |
