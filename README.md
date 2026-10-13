@@ -21,6 +21,23 @@ The published tests use synthetic data. No physical motion or heating was trigge
 
 The installer and panel support **English, 한국어, 日本語, 简体中文 and Español**. The Language menu defaults to Follow Mainsail. A manual language choice overrides synchronization until Follow Mainsail is selected again. The mode is saved in this browser per printer address. Mainsail and touchscreen languages are unchanged. The installer changes Mainsail web files only. It creates no printer cfg, daemon or credentials file and does not restart services, reboot the printer or move filament.
 
+## Usage examples
+
+| CFS overview | Filament actions |
+| --- | --- |
+| <img src="docs/screenshots/cfs-overview.png" width="480" alt="CFS overview showing four filament slots, temperature and humidity"> | <img src="docs/screenshots/filament-actions.png" width="480" alt="Filament menu with Load, Unload and Edit type and color"> |
+| View slot types and colors, enclosure readings and printer status. | Select a slot to load, unload or edit it; unavailable actions explain why. |
+
+| Type and color editor | External spool |
+| --- | --- |
+| <img src="docs/screenshots/filament-editor.png" width="420" alt="Filament editor with material type and color selection"> | <img src="docs/screenshots/external-spool.png" width="480" alt="Ext. tab showing an unset external spool and its edit button"> |
+| Choose a material type and color, then save using the printer's Generic preset. | The **Ext.** tab shows printer-reported external spool information and provides type/color editing. |
+
+| Multiple CFS units | Language menu |
+| --- | --- |
+| <img src="docs/screenshots/multiple-cfs.png" width="300" alt="Tabs for CFS 1, CFS 2, CFS 3 and Ext."> | <img src="docs/screenshots/language-menu.png" width="204" alt="Language menu with Follow Mainsail and five manual languages"> |
+| Switch between detected CFS units. This screenshot shows the three-unit demo. | Follow Mainsail's language or choose one of five languages manually. |
+
 ## Install
 
 On this repository, choose **Code → Download ZIP**, extract it, and copy the entire project directory to the printer using your existing SSH/SCP access. Open a shell in that directory. Requirements: Python 3.8+, an existing locally hosted Mainsail frontend and the printer's Creality WebSocket service on port 9999. No Node.js installation is required on the printer.

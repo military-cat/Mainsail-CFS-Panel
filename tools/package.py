@@ -18,6 +18,9 @@ exact_files = [
     'tests/external.test.cjs', 'tests/i18n.test.cjs', 'tests/panel-dom.test.cjs',
     'tests/synthetic-printer.json', 'demo/index.html', 'demo/server.cjs', 'demo/sample.json',
     'tools/build.py', 'tools/package.py',
+    'docs/screenshots/cfs-overview.png', 'docs/screenshots/filament-actions.png',
+    'docs/screenshots/filament-editor.png', 'docs/screenshots/external-spool.png',
+    'docs/screenshots/multiple-cfs.png', 'docs/screenshots/language-menu.png',
 ]
 exact_files.extend('locales/' + folder + '/' + lang + '.json'
     for folder in ('installer', 'panel') for lang in ('en', 'ko', 'ja', 'zh', 'es'))

@@ -8,6 +8,23 @@
 
 설치 안내와 패널은 **영어·한국어·일본어·중국어 간체·스페인어, 총 5개 언어**를 지원합니다. 언어 메뉴의 기본값인 ‘Mainsail 언어 따라가기’는 메인세일의 언어와 동기화됩니다. 직접 언어를 고르면 그 선택을 우선하며, 다시 ‘따라가기’를 선택하면 자동 동기화가 재개됩니다. 선택 모드는 프린터 주소별로 해당 브라우저에 저장됩니다. 메인세일 자체와 터치스크린의 언어는 바꾸지 않습니다.
 
+## 사용 예시
+
+| CFS 정보 | 필라멘트 동작 메뉴 |
+| --- | --- |
+| <img src="docs/screenshots/cfs-overview.png" width="480" alt="슬롯 4개의 필라멘트 정보와 온습도가 표시된 CFS 화면"> | <img src="docs/screenshots/filament-actions.png" width="480" alt="로딩, 언로딩, 종류와 색상 수정 메뉴"> |
+| 슬롯별 종류·색상, CFS 온습도와 프린터 상태를 확인합니다. | 슬롯을 선택해 로딩·언로딩·수정을 실행합니다. 사용할 수 없는 동작은 이유를 표시합니다. |
+
+| 종류·색상 수정 | 외부 스풀 |
+| --- | --- |
+| <img src="docs/screenshots/filament-editor.png" width="420" alt="필라멘트 종류와 색상을 선택하는 편집 화면"> | <img src="docs/screenshots/external-spool.png" width="480" alt="미설정 외부 스풀과 편집 버튼이 표시된 Ext. 화면"> |
+| 종류와 색상을 선택하고 프린터의 Generic 재질값으로 저장합니다. | **Ext.** 탭에서 프린터가 보고한 외부 스풀 정보를 확인하고 종류·색상을 수정합니다. |
+
+| 다중 CFS 선택 | 언어 메뉴 |
+| --- | --- |
+| <img src="docs/screenshots/multiple-cfs.png" width="300" alt="CFS 1, CFS 2, CFS 3와 Ext. 선택 탭"> | <img src="docs/screenshots/language-menu.png" width="204" alt="메인세일 언어 따라가기와 5개 언어를 선택하는 메뉴"> |
+| 감지된 CFS 사이를 전환합니다. 사진은 CFS 3개를 표시한 예시 화면입니다. | 메인세일 언어를 따라가거나 다섯 언어 중 하나를 직접 선택합니다. |
+
 ## 설치
 
 저장소에서 **Code → Download ZIP**을 선택하고 압축을 풉니다. 기존 SSH/SCP 접속 방법으로 프로젝트 폴더 전체를 프린터에 옮긴 뒤, 프린터의 터미널에서 해당 폴더로 이동해 실행합니다. Python 3.8 이상, 이미 설치된 메인세일, 포트 9999의 Creality WebSocket 서비스가 필요합니다. 프린터에 Node.js를 설치할 필요는 없습니다.
