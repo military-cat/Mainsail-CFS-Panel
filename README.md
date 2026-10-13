@@ -89,4 +89,4 @@ The build bundles all five panel catalogs into a deterministic browser script. T
 
 ## License
 
-Code: GPL-3.0-only. Derived from [swilsonnc/K2-plus-cfs-panel](https://github.com/swilsonnc/K2-plus-cfs-panel). See [NOTICE.md](NOTICE.md) for attribution and the supplied product image.
+Code: GPL-3.0-only. See [NOTICE.md](NOTICE.md) for attribution and the supplied product image.
