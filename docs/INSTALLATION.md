@@ -2,13 +2,34 @@
 
 Run the installer on the printer in the fully extracted release directory. Requirements: Python 3.8+, an existing writable Mainsail frontend and, for the live panel, the existing Creality WebSocket service on port 9999. No package downloads are performed. The installer does not ask for SSH credentials; connect using your existing access method first.
 
+## Download the v0.1.0 installation package
+
+Use [Mainsail-CFS-Panel-v0.1.0.zip](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.0/Mainsail-CFS-Panel-v0.1.0.zip) from the [v0.1.0 release](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.0). Connect from your computer using your existing account, replacing `PRINTER_IP` with the printer's address:
+
+```sh
+ssh root@PRINTER_IP
+```
+
+In the printer's SSH shell, download and extract the package. These commands require `wget` and `unzip`; `&&` stops the sequence on failure:
+
+```sh
+mkdir -p /mnt/UDISK/cfsail-install-v0.1.0 &&
+cd /mnt/UDISK/cfsail-install-v0.1.0 &&
+wget -O Mainsail-CFS-Panel-v0.1.0.zip https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.0/Mainsail-CFS-Panel-v0.1.0.zip &&
+unzip -o Mainsail-CFS-Panel-v0.1.0.zip &&
+cd Mainsail-CFS-Panel &&
+sh install.sh
+```
+
+If `wget` is unavailable, substitute `curl -fL -o` for `wget -O` when curl is installed. Otherwise, download/extract the ZIP on your computer and transfer the entire `Mainsail-CFS-Panel` folder by SCP/SFTP. The staging directory above is separate from the Mainsail web root and its backup directory. The ZIP contains the prebuilt browser assets, so no build step is needed on the printer.
+
 ## Interactive install
 
 ```sh
 sh install.sh
 ```
 
-The first menu lists English, Korean, Japanese, Simplified Chinese and Spanish. The selected language is used for subsequent messages and the panel. Unknown language aliases fall back to English. The plan lists the selected web root, external backup, layout and every frontend file to change. Confirmation defaults to No.
+The first menu lists English, Korean, Japanese, Simplified Chinese and Spanish. The selected language is used for installer messages and the panel's fallback language; the panel defaults to Follow Mainsail. Unknown language aliases fall back to English. The plan lists the selected web root, external backup, layout and every frontend file to change. Confirmation defaults to No.
 
 `--lang` skips the language menu. `--yes` explicitly confirms a plan for unattended use. Without `--yes`, noninteractive execution refuses writes. `--dry-run` can be used noninteractively and writes no frontend files or backups.
 

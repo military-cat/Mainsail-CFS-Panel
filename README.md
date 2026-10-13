@@ -40,7 +40,30 @@ The installer and panel support **English, 한국어, 日本語, 简体中文 an
 
 ## Install
 
-On this repository, choose **Code → Download ZIP**, extract it, and copy the entire project directory to the printer using your existing SSH/SCP access. Open a shell in that directory. Requirements: Python 3.8+, an existing locally hosted Mainsail frontend and the printer's Creality WebSocket service on port 9999. No Node.js installation is required on the printer.
+Download [**Mainsail-CFS-Panel-v0.1.0.zip**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.0/Mainsail-CFS-Panel-v0.1.0.zip) from the [**v0.1.0 release**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.0). This is the versioned installation package, including the prebuilt panel and translations.
+
+Requirements: Python 3.8+, an existing locally hosted Mainsail frontend and the printer's Creality WebSocket service on port 9999. The SSH download commands also require `wget` and `unzip`. No Node.js installation is required on the printer.
+
+From your computer, connect using your existing SSH account. Replace `PRINTER_IP` with the printer's address; the example uses `root`:
+
+```sh
+ssh root@PRINTER_IP
+```
+
+Then run these commands **in the printer's SSH shell**. They download the v0.1.0 installation ZIP, extract it into a separate staging directory and start the interactive installer. The `&&` operators stop the sequence if a step fails:
+
+```sh
+mkdir -p /mnt/UDISK/cfsail-install-v0.1.0 &&
+cd /mnt/UDISK/cfsail-install-v0.1.0 &&
+wget -O Mainsail-CFS-Panel-v0.1.0.zip https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.0/Mainsail-CFS-Panel-v0.1.0.zip &&
+unzip -o Mainsail-CFS-Panel-v0.1.0.zip &&
+cd Mainsail-CFS-Panel &&
+sh install.sh
+```
+
+If `wget` is unavailable but `curl` is installed, replace `wget -O` with `curl -fL -o` in the sequence above, keeping the URL and trailing `&&`.
+
+If direct download or `unzip` is unavailable, download the installation ZIP on your computer, extract it and copy the entire `Mainsail-CFS-Panel` folder to the printer using SCP/SFTP. Open that folder in the printer's SSH shell and run:
 
 ```sh
 sh install.sh

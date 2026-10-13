@@ -27,7 +27,30 @@
 
 ## 설치
 
-저장소에서 **Code → Download ZIP**을 선택하고 압축을 풉니다. 기존 SSH/SCP 접속 방법으로 프로젝트 폴더 전체를 프린터에 옮긴 뒤, 프린터의 터미널에서 해당 폴더로 이동해 실행합니다. Python 3.8 이상, 이미 설치된 메인세일, 포트 9999의 Creality WebSocket 서비스가 필요합니다. 프린터에 Node.js를 설치할 필요는 없습니다.
+[**v0.1.0 릴리즈**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.0)의 [**Mainsail-CFS-Panel-v0.1.0.zip**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.0/Mainsail-CFS-Panel-v0.1.0.zip)을 사용합니다. 빌드된 패널과 번역이 포함된 버전별 설치 패키지입니다.
+
+Python 3.8 이상, 이미 설치된 메인세일, 포트 9999의 Creality WebSocket 서비스가 필요합니다. 아래 SSH 다운로드 명령에는 `wget`과 `unzip`도 필요합니다. 프린터에 Node.js를 설치할 필요는 없습니다.
+
+PC의 터미널에서 기존 SSH 계정으로 접속합니다. `PRINTER_IP`를 프린터 주소로 바꿔 주세요. 아래 예시는 `root` 계정입니다.
+
+```sh
+ssh root@PRINTER_IP
+```
+
+접속한 뒤 **프린터의 SSH 터미널에서** 다음 명령을 실행합니다. v0.1.0 설치용 ZIP을 내려받아 별도 준비 폴더에 압축을 풀고 설치기를 실행합니다. 중간 단계가 실패하면 `&&`에서 멈춥니다.
+
+```sh
+mkdir -p /mnt/UDISK/cfsail-install-v0.1.0 &&
+cd /mnt/UDISK/cfsail-install-v0.1.0 &&
+wget -O Mainsail-CFS-Panel-v0.1.0.zip https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.0/Mainsail-CFS-Panel-v0.1.0.zip &&
+unzip -o Mainsail-CFS-Panel-v0.1.0.zip &&
+cd Mainsail-CFS-Panel &&
+sh install.sh
+```
+
+`wget`이 없고 `curl`을 사용할 수 있다면 위 명령의 `wget -O`를 `curl -fL -o`로 바꿔 주세요. 다운로드 주소와 줄 끝의 `&&`는 그대로 둡니다.
+
+프린터에서 직접 다운로드하거나 `unzip`을 실행할 수 없다면 PC에서 설치용 ZIP을 내려받아 압축을 풀고, `Mainsail-CFS-Panel` 폴더 전체를 SCP/SFTP로 프린터에 옮깁니다. 프린터의 SSH 터미널에서 해당 폴더로 이동해 실행합니다.
 
 ```sh
 sh install.sh
