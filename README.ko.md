@@ -1,3 +1,5 @@
+![CFSail — 메인세일용 CFS 관리 패널](docs/images/cfsail-banner.png)
+
 # CFSail
 
 **Mainsail-CFS-Panel**은 메인세일에서 Creality CFS와 외부 스풀의 필라멘트 정보를 관리하는 프로젝트입니다. 패널 이름은 **CFSail**입니다.

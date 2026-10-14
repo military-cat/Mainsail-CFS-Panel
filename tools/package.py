@@ -22,6 +22,7 @@ exact_files = [
     'docs/screenshots/filament-editor.png', 'docs/screenshots/external-spool.png',
     'docs/screenshots/multiple-cfs.png', 'docs/screenshots/language-menu.png',
     'docs/screenshots/printing-loaded-slot.png', 'docs/screenshots/printing-actions-blocked.png',
+    'docs/images/cfsail-banner.png',
 ]
 exact_files.extend('locales/' + folder + '/' + lang + '.json'
     for folder in ('installer', 'panel') for lang in ('en', 'ko', 'ja', 'zh', 'es'))

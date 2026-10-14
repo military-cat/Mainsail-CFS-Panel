@@ -1,3 +1,5 @@
+![CFSail — CFS management for Mainsail](docs/images/cfsail-banner.png)
+
 # CFSail
 
 **Mainsail-CFS-Panel** adds Creality CFS and external-spool filament management to Mainsail. The interface is called **CFSail**.
