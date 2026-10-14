@@ -32,7 +32,7 @@ def build():
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(output.replace('\r\n', '\n').encode('utf-8'))
     manifest = {
-        'schema': 1, 'version': '0.1.0', 'project': 'Mainsail-CFS-Panel',
+        'schema': 1, 'version': '0.1.1', 'project': 'Mainsail-CFS-Panel',
         'languages': list(LANGUAGES),
         'assets': {name: hashlib.sha256((ROOT / 'assets' / name).read_bytes()).hexdigest()
                    for name in ('cfs-panel.js', 'cfs.png')}
