@@ -18,7 +18,7 @@ The external spool's tab and name are always **Ext.**, in every language. Editab
 
 | Printer | Verified on the inspected installation | Remaining hardware checks |
 | --- | --- | --- |
-| K2 Plus + one CFS | Legacy-panel replacement, native Dashboard integration, live slot metadata and enclosure readings, language synchronization; original-panel material writes were previously confirmed and restored | Physical load/unload with this beta distribution |
+| K2 Plus + 1 CFS | Legacy-panel replacement, native Dashboard integration, live slot metadata and enclosure readings, language synchronization; original-panel material writes were previously confirmed and restored | Physical load/unload with this beta distribution |
 | Creality Hi, external spool only | Install/remove/reinstall, exact frontend restoration, external material type/color save and restoration | CFS slots, enclosure readings and transport with a connected CFS |
 
 The published tests use synthetic data. No physical motion or heating was triggered while validating this distribution. See [compatibility and test scope](docs/COMPATIBILITY.md).
