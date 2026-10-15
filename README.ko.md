@@ -4,7 +4,7 @@
 
 **Mainsail-CFS-Panel**은 메인세일에서 Creality CFS와 외부 스풀의 필라멘트 정보를 관리하는 프로젝트입니다. 패널 이름은 **CFSail**입니다.
 
-현재 버전은 **v0.1.1 베타**입니다. 문서·이미지를 갱신한 버전이며, 설치기와 패널 코드는 K2 Plus와 Creality Hi에서 확인한 v0.1.0과 동일합니다. 프린터의 Creality 통신 인터페이스와 메인세일 빌드에 따라 호환성이 달라집니다.
+현재 버전은 **v0.1.2 베타**입니다. 문서·이미지를 갱신한 버전이며, 설치기와 패널 코드는 K2 Plus와 Creality Hi에서 확인한 v0.1.0과 동일합니다. 프린터의 Creality 통신 인터페이스와 메인세일 빌드에 따라 호환성이 달라집니다.
 
 상단 CFS 탭을 선택하면 해당 장치의 종류·색상·익스트루더에 로딩된 필라멘트·온습도가 표시됩니다. 외부 스풀의 탭과 이름은 모든 언어에서 `Ext.`로 표시합니다. 프린터가 편집 가능으로 보고하는 필라멘트는 Generic 재질과 색상으로 수정하고, 저장 후 프린터 응답에서 적용 여부를 확인합니다. 외부 스풀 로딩·언로딩은 프린터 터치스크린에서 진행합니다.
 
@@ -38,7 +38,7 @@
 
 ## 설치
 
-[**v0.1.1 릴리즈**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.1)의 [**Mainsail-CFS-Panel-v0.1.1.zip**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.1/Mainsail-CFS-Panel-v0.1.1.zip)을 사용합니다. 빌드된 패널과 번역이 포함된 버전별 설치 패키지입니다.
+[**v0.1.2 릴리즈**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.2)의 [**Mainsail-CFS-Panel-v0.1.2.zip**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.2/Mainsail-CFS-Panel-v0.1.2.zip)을 사용합니다. 빌드된 패널과 번역이 포함된 버전별 설치 패키지입니다.
 
 Python 3.8 이상, 이미 설치된 메인세일, 포트 9999의 Creality WebSocket 서비스가 필요합니다. 아래 SSH 다운로드 명령에는 `wget`과 `unzip`도 필요합니다. 프린터에 Node.js를 설치할 필요는 없습니다.
 
@@ -48,13 +48,13 @@ PC의 터미널에서 기존 SSH 계정으로 접속합니다. `PRINTER_IP`를 �
 ssh root@PRINTER_IP
 ```
 
-접속한 뒤 **프린터의 SSH 터미널에서** 다음 명령을 실행합니다. v0.1.1 설치용 ZIP을 내려받아 별도 준비 폴더에 압축을 풀고 설치기를 실행합니다. 중간 단계가 실패하면 `&&`에서 멈춥니다.
+접속한 뒤 **프린터의 SSH 터미널에서** 다음 명령을 실행합니다. v0.1.2 설치용 ZIP을 내려받아 별도 준비 폴더에 압축을 풀고 설치기를 실행합니다. 중간 단계가 실패하면 `&&`에서 멈춥니다.
 
 ```sh
-mkdir -p /mnt/UDISK/cfsail-install-v0.1.1 &&
-cd /mnt/UDISK/cfsail-install-v0.1.1 &&
-wget -O Mainsail-CFS-Panel-v0.1.1.zip https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.1/Mainsail-CFS-Panel-v0.1.1.zip &&
-unzip -o Mainsail-CFS-Panel-v0.1.1.zip &&
+mkdir -p /mnt/UDISK/cfsail-install-v0.1.2 &&
+cd /mnt/UDISK/cfsail-install-v0.1.2 &&
+wget -O Mainsail-CFS-Panel-v0.1.2.zip https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.2/Mainsail-CFS-Panel-v0.1.2.zip &&
+unzip -o Mainsail-CFS-Panel-v0.1.2.zip &&
 cd Mainsail-CFS-Panel &&
 sh install.sh
 ```

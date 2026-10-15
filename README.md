@@ -4,7 +4,7 @@
 
 **Mainsail-CFS-Panel** adds Creality CFS and external-spool filament management to Mainsail. The interface is called **CFSail**.
 
-**v0.1.1 — beta.** This documentation and image update uses the same installer and panel runtime checked on a K2 Plus and a Creality Hi in v0.1.0. Compatibility depends on the printer's Creality WebSocket interface and the installed Mainsail build; this is not a universal MMU plugin.
+**v0.1.2 — beta.** This documentation and image update uses the same installer and panel runtime checked on a K2 Plus and a Creality Hi in v0.1.0. Compatibility depends on the printer's Creality WebSocket interface and the installed Mainsail build; this is not a universal MMU plugin.
 
 [한국어 안내](README.ko.md) · [Installation](docs/INSTALLATION.md) · [Compatibility](docs/COMPATIBILITY.md) · [Languages](docs/TRANSLATIONS.md)
 
@@ -51,7 +51,7 @@ The installer and panel support **English, 한국어, 日本語, 简体中文 an
 
 ## Install
 
-Download [**Mainsail-CFS-Panel-v0.1.1.zip**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.1/Mainsail-CFS-Panel-v0.1.1.zip) from the [**v0.1.1 release**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.1). This is the versioned installation package, including the prebuilt panel and translations.
+Download [**Mainsail-CFS-Panel-v0.1.2.zip**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.2/Mainsail-CFS-Panel-v0.1.2.zip) from the [**v0.1.2 release**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.2). This is the versioned installation package, including the prebuilt panel and translations.
 
 Requirements: Python 3.8+, an existing locally hosted Mainsail frontend and the printer's Creality WebSocket service on port 9999. The SSH download commands also require `wget` and `unzip`. No Node.js installation is required on the printer.
 
@@ -61,13 +61,13 @@ From your computer, connect using your existing SSH account. Replace `PRINTER_IP
 ssh root@PRINTER_IP
 ```
 
-Then run these commands **in the printer's SSH shell**. They download the v0.1.1 installation ZIP, extract it into a separate staging directory and start the interactive installer. The `&&` operators stop the sequence if a step fails:
+Then run these commands **in the printer's SSH shell**. They download the v0.1.2 installation ZIP, extract it into a separate staging directory and start the interactive installer. The `&&` operators stop the sequence if a step fails:
 
 ```sh
-mkdir -p /mnt/UDISK/cfsail-install-v0.1.1 &&
-cd /mnt/UDISK/cfsail-install-v0.1.1 &&
-wget -O Mainsail-CFS-Panel-v0.1.1.zip https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.1/Mainsail-CFS-Panel-v0.1.1.zip &&
-unzip -o Mainsail-CFS-Panel-v0.1.1.zip &&
+mkdir -p /mnt/UDISK/cfsail-install-v0.1.2 &&
+cd /mnt/UDISK/cfsail-install-v0.1.2 &&
+wget -O Mainsail-CFS-Panel-v0.1.2.zip https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.2/Mainsail-CFS-Panel-v0.1.2.zip &&
+unzip -o Mainsail-CFS-Panel-v0.1.2.zip &&
 cd Mainsail-CFS-Panel &&
 sh install.sh
 ```

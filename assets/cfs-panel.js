@@ -324,7 +324,7 @@
     #noyeah-cfs-panel .ncfs-photo{position:absolute;width:100%;height:auto;top:-39.13%;left:0;filter:grayscale(1);pointer-events:none}
     #noyeah-cfs-panel .ncfs-tints{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:multiply;pointer-events:none}
     #noyeah-cfs-panel .ncfs-image-labels{position:absolute;inset:0;pointer-events:none}
-    #noyeah-cfs-panel .ncfs-image-label{position:absolute;top:45%;width:15%;border-radius:5px;background:#111c;border:1px solid #ffffff22;color:#fff;text-align:center;font-size:12px;padding:4px;box-shadow:0 2px 8px #0006}
+    #noyeah-cfs-panel .ncfs-image-label{position:absolute;bottom:46.5%;width:15%;height:clamp(14px,4.8cqw,28px);display:flex;align-items:center;justify-content:center;border-radius:5px;background:#111c;border:1px solid #ffffff22;color:#fff;text-align:center;font-size:clamp(9px,2cqw,12px);line-height:1;white-space:nowrap;padding:0 2px;box-shadow:0 2px 8px #0006}
     #noyeah-cfs-panel .ncfs-image-label.selected{border:2px solid #00e676;color:#00e676}
     #noyeah-cfs-panel .ncfs-reel-hit{position:absolute;top:15.5%;height:38%;width:15%;padding:0;background:transparent;border:2px solid transparent;border-radius:5px;pointer-events:auto}
     #noyeah-cfs-panel .ncfs-reel-hit.selected{border-color:#00e676;box-shadow:0 0 0 1px #00e67644,0 0 10px #00e67644}
