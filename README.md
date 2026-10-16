@@ -4,7 +4,7 @@
 
 **Mainsail-CFS-Panel** adds Creality CFS and external-spool filament management to Mainsail. The interface is called **CFSail**.
 
-**v0.1.2 — beta.** This documentation and image update uses the same installer and panel runtime checked on a K2 Plus and a Creality Hi in v0.1.0. Compatibility depends on the printer's Creality WebSocket interface and the installed Mainsail build; this is not a universal MMU plugin.
+**v0.1.3 — beta.** Adds localized CFS error guidance and a manual recovery button. The new recovery flow has been checked with a local simulated printer, not on physical hardware. Compatibility depends on the printer's Creality WebSocket interface and the installed Mainsail build; this is not a universal MMU plugin.
 
 [한국어 안내](README.ko.md) · [Installation](docs/INSTALLATION.md) · [Compatibility](docs/COMPATIBILITY.md) · [Languages](docs/TRANSLATIONS.md)
 
@@ -24,6 +24,14 @@ The external spool's tab and name are always **Ext.**, in every language. Editab
 The published tests use synthetic data. No physical motion or heating was triggered while validating this distribution. See [compatibility and test scope](docs/COMPATIBILITY.md).
 
 The installer and panel support **English, 한국어, 日本語, 简体中文 and Español**. The Language menu defaults to Follow Mainsail. A manual language choice overrides synchronization until Follow Mainsail is selected again. The mode is saved in this browser per printer address. Mainsail and touchscreen languages are unchanged. The installer changes Mainsail web files only. It creates no printer cfg, daemon or credentials file and does not restart services, reboot the printer or move filament.
+
+## Error guidance and manual recovery
+
+CFSail describes **33 current Creality OS CFS error codes** in all five panel languages, showing the reported condition, suggested checks, exact code and original printer report. Unknown and legacy codes keep their original report without an inferred diagnosis. Meanings are based on the [Creality error index](https://wiki.creality.com/en/printers-general-documents).
+
+For recognized recoverable filament-path errors, **Retry CFS recovery** sends exactly `BOX_ERROR_RESUME_PROCESS` through the same-origin Moonraker API after checking printer state. Resolve the physical jam or other cause first; recovery can heat the nozzle or move filament. An active print must be paused. CFSail sends no additional `RESUME` command and never retries automatically. A request being accepted is not completion: the panel waits for a cleared error, idle feed state and fresh connected CFS slot data. Uncertain results block another request until completion is confirmed.
+
+This feature requires the existing Moonraker API and firmware command. It adds no printer macros or cfg entries. Local tests cover success, rejection, disconnects, timeouts and active-print blocking; physical recovery remains unverified. See [test scope](docs/TESTING.md).
 
 ## Usage examples
 
@@ -51,7 +59,7 @@ The installer and panel support **English, 한국어, 日本語, 简体中文 an
 
 ## Install
 
-Download [**Mainsail-CFS-Panel-v0.1.2.zip**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.2/Mainsail-CFS-Panel-v0.1.2.zip) from the [**v0.1.2 release**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.2). This is the versioned installation package, including the prebuilt panel and translations.
+Download [**Mainsail-CFS-Panel-v0.1.3.zip**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.3/Mainsail-CFS-Panel-v0.1.3.zip) from the [**v0.1.3 release**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.3). This is the versioned installation package, including the prebuilt panel and translations.
 
 Requirements: Python 3.8+, an existing locally hosted Mainsail frontend and the printer's Creality WebSocket service on port 9999. The SSH download commands also require `wget` and `unzip`. No Node.js installation is required on the printer.
 
@@ -61,13 +69,13 @@ From your computer, connect using your existing SSH account. Replace `PRINTER_IP
 ssh root@PRINTER_IP
 ```
 
-Then run these commands **in the printer's SSH shell**. They download the v0.1.2 installation ZIP, extract it into a separate staging directory and start the interactive installer. The `&&` operators stop the sequence if a step fails:
+Then run these commands **in the printer's SSH shell**. They download the v0.1.3 installation ZIP, extract it into a separate staging directory and start the interactive installer. The `&&` operators stop the sequence if a step fails:
 
 ```sh
-mkdir -p /mnt/UDISK/cfsail-install-v0.1.2 &&
-cd /mnt/UDISK/cfsail-install-v0.1.2 &&
-wget -O Mainsail-CFS-Panel-v0.1.2.zip https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.2/Mainsail-CFS-Panel-v0.1.2.zip &&
-unzip -o Mainsail-CFS-Panel-v0.1.2.zip &&
+mkdir -p /mnt/UDISK/cfsail-install-v0.1.3 &&
+cd /mnt/UDISK/cfsail-install-v0.1.3 &&
+wget -O Mainsail-CFS-Panel-v0.1.3.zip https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.3/Mainsail-CFS-Panel-v0.1.3.zip &&
+unzip -o Mainsail-CFS-Panel-v0.1.3.zip &&
 cd Mainsail-CFS-Panel &&
 sh install.sh
 ```

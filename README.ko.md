@@ -4,13 +4,21 @@
 
 **Mainsail-CFS-Panel**은 메인세일에서 Creality CFS와 외부 스풀의 필라멘트 정보를 관리하는 프로젝트입니다. 패널 이름은 **CFSail**입니다.
 
-현재 버전은 **v0.1.2 베타**입니다. 문서·이미지를 갱신한 버전이며, 설치기와 패널 코드는 K2 Plus와 Creality Hi에서 확인한 v0.1.0과 동일합니다. 프린터의 Creality 통신 인터페이스와 메인세일 빌드에 따라 호환성이 달라집니다.
+현재 버전은 **v0.1.3 베타**입니다. 오류 종류별 안내와 수동 CFS 복구 버튼을 추가했습니다. 새 복구 기능은 로컬 모의 프린터에서 검증했으며, 실제 장비에서의 복구 동작은 아직 검증하지 않았습니다. 프린터의 Creality 통신 인터페이스와 메인세일 빌드에 따라 호환성이 달라집니다.
 
 상단 CFS 탭을 선택하면 해당 장치의 종류·색상·익스트루더에 로딩된 필라멘트·온습도가 표시됩니다. 외부 스풀의 탭과 이름은 모든 언어에서 `Ext.`로 표시합니다. 프린터가 편집 가능으로 보고하는 필라멘트는 Generic 재질과 색상으로 수정하고, 저장 후 프린터 응답에서 적용 여부를 확인합니다. 외부 스풀 로딩·언로딩은 프린터 터치스크린에서 진행합니다.
 
 실제 프린터에 연결하면 **CFS 내부 온도(°C)와 상대습도(% RH)를 표시합니다.** CFS가 측정해 프린터로 전달한 값을 사용하며, 연결 중에는 측정값을 주기적으로 갱신합니다.
 
 설치 안내와 패널은 **영어·한국어·일본어·중국어 간체·스페인어, 총 5개 언어**를 지원합니다. 언어 메뉴의 기본값인 ‘Mainsail 언어 따라가기’는 메인세일의 언어와 동기화됩니다. 직접 언어를 고르면 그 선택을 우선하며, 다시 ‘따라가기’를 선택하면 자동 동기화가 재개됩니다. 선택 모드는 프린터 주소별로 해당 브라우저에 저장됩니다. 메인세일 자체와 터치스크린의 언어는 바꾸지 않습니다.
+
+## 오류 안내와 수동 복구
+
+[Creality 공식 오류표](https://wiki.creality.com/en/printers-general-documents)를 기준으로 **현재 CFS 관련 오류 33종**을 다섯 언어로 안내합니다. 보고된 증상과 확인할 부분, 오류 번호, 프린터 원문을 표시합니다. 미등록 코드와 구형 코드는 의미를 추측하지 않고 원문을 유지합니다.
+
+복구 대상으로 확인된 필라멘트 경로 오류에는 **CFS 복구 재시도** 버튼이 나타납니다. 걸림 등 원인을 해결한 뒤 누르면 프린터 상태를 확인하고 동일 주소의 Moonraker API로 `BOX_ERROR_RESUME_PROCESS`를 한 번 전송합니다. 복구 과정에서 노즐 가열이나 필라멘트 이동이 발생할 수 있으며, 출력 중이라면 먼저 일시정지해야 합니다. 별도의 `RESUME` 명령이나 자동 재시도는 실행하지 않습니다.
+
+명령 접수와 복구 완료는 구분합니다. 오류 해제·필라멘트 대기·연결된 CFS의 최신 슬롯 정보를 모두 확인해야 완료로 표시합니다. 실행 결과가 불명확하면 완료가 확인될 때까지 중복 요청을 막습니다. 기존 Moonraker API와 펌웨어 명령이 필요하며, 매크로나 컨픽을 추가하지 않습니다. 검증 범위는 [테스트 문서](docs/TESTING.md)를 참고해 주세요.
 
 ## 사용 예시
 
@@ -38,7 +46,7 @@
 
 ## 설치
 
-[**v0.1.2 릴리즈**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.2)의 [**Mainsail-CFS-Panel-v0.1.2.zip**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.2/Mainsail-CFS-Panel-v0.1.2.zip)을 사용합니다. 빌드된 패널과 번역이 포함된 버전별 설치 패키지입니다.
+[**v0.1.3 릴리즈**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.3)의 [**Mainsail-CFS-Panel-v0.1.3.zip**](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.3/Mainsail-CFS-Panel-v0.1.3.zip)을 사용합니다. 빌드된 패널과 번역이 포함된 버전별 설치 패키지입니다.
 
 Python 3.8 이상, 이미 설치된 메인세일, 포트 9999의 Creality WebSocket 서비스가 필요합니다. 아래 SSH 다운로드 명령에는 `wget`과 `unzip`도 필요합니다. 프린터에 Node.js를 설치할 필요는 없습니다.
 
@@ -48,13 +56,13 @@ PC의 터미널에서 기존 SSH 계정으로 접속합니다. `PRINTER_IP`를 �
 ssh root@PRINTER_IP
 ```
 
-접속한 뒤 **프린터의 SSH 터미널에서** 다음 명령을 실행합니다. v0.1.2 설치용 ZIP을 내려받아 별도 준비 폴더에 압축을 풀고 설치기를 실행합니다. 중간 단계가 실패하면 `&&`에서 멈춥니다.
+접속한 뒤 **프린터의 SSH 터미널에서** 다음 명령을 실행합니다. v0.1.3 설치용 ZIP을 내려받아 별도 준비 폴더에 압축을 풀고 설치기를 실행합니다. 중간 단계가 실패하면 `&&`에서 멈춥니다.
 
 ```sh
-mkdir -p /mnt/UDISK/cfsail-install-v0.1.2 &&
-cd /mnt/UDISK/cfsail-install-v0.1.2 &&
-wget -O Mainsail-CFS-Panel-v0.1.2.zip https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.2/Mainsail-CFS-Panel-v0.1.2.zip &&
-unzip -o Mainsail-CFS-Panel-v0.1.2.zip &&
+mkdir -p /mnt/UDISK/cfsail-install-v0.1.3 &&
+cd /mnt/UDISK/cfsail-install-v0.1.3 &&
+wget -O Mainsail-CFS-Panel-v0.1.3.zip https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.3/Mainsail-CFS-Panel-v0.1.3.zip &&
+unzip -o Mainsail-CFS-Panel-v0.1.3.zip &&
 cd Mainsail-CFS-Panel &&
 sh install.sh
 ```

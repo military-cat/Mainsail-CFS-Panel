@@ -7,7 +7,9 @@ import re
 import zipfile
 
 base = Path(__file__).resolve().parent.parent
-destination = base.parent / 'Mainsail-CFS-Panel.zip'
+version = json.loads((base / 'release.json').read_text(encoding='utf-8'))['version']
+assert re.fullmatch(r'\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?', version), 'Invalid release version'
+destination = base.parent / ('Mainsail-CFS-Panel-v' + version + '.zip')
 top_files = ['install.py', 'install.sh', 'LICENSE', 'NOTICE.md', 'README.md', 'README.ko.md', '.gitignore', 'release.json']
 documentation = ['TRANSLATIONS.md', 'INSTALLATION.md', 'COMPATIBILITY.md', 'TESTING.md']
 files = [base / name for name in top_files] + [base / 'docs' / name for name in documentation]
@@ -15,6 +17,7 @@ exact_files = [
     'assets/cfs-panel.js', 'assets/cfs.png', 'src/panel.js', 'src/i18n.js',
     'tests/test_installer.py', 'tests/test_panel_build.py',
     'tests/panel.test.cjs', 'tests/transport.test.cjs', 'tests/sync.test.cjs',
+    'tests/browser-fixture.cjs', 'tests/recovery.test.cjs', 'tests/error-messages.test.cjs',
     'tests/external.test.cjs', 'tests/i18n.test.cjs', 'tests/panel-dom.test.cjs',
     'tests/synthetic-printer.json', 'demo/index.html', 'demo/server.cjs', 'demo/sample.json',
     'tools/build.py', 'tools/package.py',
@@ -41,7 +44,7 @@ for path in files:
 names = sorted(set(files))
 with zipfile.ZipFile(destination, 'w', zipfile.ZIP_DEFLATED) as archive:
     for path in names:
-        info = zipfile.ZipInfo(str(Path(base.name) / path.relative_to(base)).replace('\\', '/'), date_time=(2026, 10, 13, 0, 0, 0))
+        info = zipfile.ZipInfo(str(Path('Mainsail-CFS-Panel') / path.relative_to(base)).replace('\\', '/'), date_time=(2026, 10, 13, 0, 0, 0))
         info.compress_type = zipfile.ZIP_DEFLATED
         info.external_attr = (0o755 if path.name in ('install.sh', 'install.py') else 0o644) << 16
         archive.writestr(info, path.read_bytes())

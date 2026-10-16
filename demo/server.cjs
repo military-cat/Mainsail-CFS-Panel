@@ -7,7 +7,8 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const initial = require('./sample.json');
-let snapshot = structuredClone(initial), writes = [], motions = [];
+let snapshot = structuredClone(initial), writes = [], motions = [], recoveries = [], recoveryMode = 'success';
+let generation = 0;
 const peers = new Set();
 const root = path.resolve(__dirname, '..');
 const port = Number(process.argv[2] || 8788);
@@ -59,11 +60,64 @@ const files = new Map([['/', 'demo/index.html'], ['/demo/', 'demo/index.html'], 
 const server = http.createServer((request, response) => {
   const pathname = new URL(request.url, 'http://localhost').pathname;
   if (pathname === '/__demo/status') {
-    response.setHeader('Content-Type', 'application/json'); response.end(JSON.stringify({ snapshot, writes, motions })); return;
+    response.setHeader('Content-Type', 'application/json'); response.end(JSON.stringify({ snapshot, writes, motions, recoveries, recoveryMode })); return;
   }
   if (pathname === '/__demo/reset' && request.method === 'POST') {
-    snapshot = structuredClone(initial); writes = []; motions = [];
+    generation++; snapshot = structuredClone(initial); writes = []; motions = []; recoveries = []; recoveryMode = 'success';
     broadcast(snapshot); response.end('ok'); return;
+  }
+  if (pathname === '/__demo/recovery' && request.method === 'POST') {
+    let body = ''; request.on('data', chunk => { body += chunk; });
+    request.on('end', () => {
+      try {
+        const input = JSON.parse(body);
+        if (!['success','reject','disconnect','unconfirmed','printing'].includes(input.mode)) throw new Error('Invalid mode');
+        const code = input.code ?? 2865;
+        if (![2836,2837,2839,2841,2853,2865,2999].includes(code)) throw new Error('Invalid error code');
+        generation++; recoveryMode = input.mode;
+        snapshot.state = input.mode === 'printing' ? 1 : 2; snapshot.feedState = 105;
+        snapshot.err = { key: code, value: code === 2999 ? 'Unmapped simulated printer fault' : '[1,"A"]' };
+        snapshot.boxsInfo.materialBoxs.find(b => b.type === 0).materials[0].state = 3;
+        broadcast(snapshot); response.end('ok');
+      } catch (_) { response.writeHead(400); response.end('Invalid simulation'); }
+    }); return;
+  }
+  if (pathname === '/printer/objects/query' && request.method === 'GET') {
+    response.setHeader('Content-Type', 'application/json');
+    response.end(JSON.stringify({ result: { status: { webhooks: { state: 'ready' },
+      print_stats: { state: recoveryMode === 'printing' ? 'printing' : 'paused' },
+      pause_resume: { is_paused: recoveryMode !== 'printing' } } } })); return;
+  }
+  if (pathname === '/printer/gcode/script' && request.method === 'POST') {
+    let body = ''; request.on('data', chunk => { body += chunk; });
+    request.on('end', () => {
+      response.setHeader('Content-Type', 'application/json');
+      let input; try { input = JSON.parse(body); } catch (_) { /* Refuse malformed requests. */ }
+      if (input?.script !== 'BOX_ERROR_RESUME_PROCESS' || recoveryMode === 'printing') {
+        response.writeHead(400); response.end(JSON.stringify({ error: { message: 'Unsupported mock command or active print' } })); return;
+      }
+      recoveries.push({ script: input.script });
+      if (recoveryMode === 'reject') {
+        response.writeHead(400); response.end(JSON.stringify({ error: { message: 'Simulated CFS recovery rejection' } })); return;
+      }
+      if (recoveryMode === 'disconnect') {
+        for (const peer of peers) peer.destroy(); request.socket.destroy(); return;
+      }
+      response.end(JSON.stringify({ result: 'ok' }));
+      if (recoveryMode !== 'success') return;
+      const currentGeneration = generation;
+      setTimeout(() => {
+        if (currentGeneration !== generation) return;
+        snapshot.feedState = 106; broadcast({ feedState: 106 });
+      }, 300);
+      setTimeout(() => {
+        if (currentGeneration !== generation) return;
+        snapshot.feedState = 0; snapshot.err = { key: 0, value: '' };
+        for (const box of snapshot.boxsInfo.materialBoxs) for (const slot of box.materials)
+          if ([3,4].includes(slot.state)) slot.state = 1;
+        broadcast({ err: snapshot.err, feedState: 0, boxsInfo: snapshot.boxsInfo });
+      }, 1800);
+    }); return;
   }
   const file = files.get(pathname);
   if (!file) { response.writeHead(404); response.end('Not found'); return; }

@@ -23,3 +23,22 @@ The panel's default language mode reads Mainsail's GUI language. Browser tests c
 The inspected real Mainsail module tree was also copied to a PC fixture using HTTP reads only. Migration on the existing native build and a reconstructed original build both passed install, Japanese-to-Spanish language update and exact byte-for-byte frontend restoration. The tree contained 143 reachable modules; native integration generated 33 rewritten modules in the original-build fixture. These private copies are excluded from the public package.
 
 `tools/package.py` packages an explicit allowlist and scans for private address/credential-file patterns. Original printer configs, SSH known-host files, live recordings and personal backups are not included in the release archive.
+
+## Local CFS recovery simulation (v0.1.3 beta)
+
+Run `node demo/server.cjs 8788` on the development computer and open `http://127.0.0.1:8788/?lang=ko`. Choose a recovery-test scenario, click **CFS 오류 만들기**, then use the panel's recovery button. The simulator listens only on loopback and never forwards requests to a printer. **데모 초기화** resets only synthetic state.
+
+The unreleased panel recognizes known filament-path errors (legacy keys 835, 836, 837, 838, 839, 841, 846, 852, 854, 855, 856, 857, 864, 865, and the corresponding keys with 2000 added). Unknown printer faults do not expose this action. It first queries same-origin Moonraker status and refuses an unready host or an actively printing job. It then sends only `BOX_ERROR_RESUME_PROCESS`, once per manual attempt. It does not append `RESUME`. A web server must proxy the standard `/printer/` Moonraker routes; no real-printer validation of this new path is claimed.
+
+A successful API reply is displayed as accepted, not completed. Completion needs post-command error-clear and idle reports plus complete, connected CFS slot snapshots for the boxes present when the request started. An uncertain result stays locked until these observations resolve it. Recovery does not clear printer errors locally, automatically retry, or replay a command on reconnect.
+
+Automated browser-bundle tests cover command identity and count, pending clicks, active printing, read-only access, errors changing during preflight, explicit rejection, disconnection, missing completion, incomplete CFS snapshots and uncertain-lock release. Timeout behavior is tested with controlled timers. This demonstrates UI and request behavior only; it does not demonstrate physical CFS recovery.
+
+### Error-specific guidance (v0.1.3 beta, local simulation)
+
+The panel describes 33 current Creality OS CFS codes using the vendor's error index:
+https://wiki.creality.com/en/printers-general-documents
+
+Descriptions identify the reported condition and suggest checks; they do not diagnose the physical root cause. Original codes and printer reports are retained as plain text. Unknown and legacy codes use the original fallback without inferring a current-code equivalent. A description does not add the code to the manual recovery allowlist.
+
+In the local demo, select an error type and click **CFS 오류 만들기**. Compare 2836 (hub to extruder sensor), 2837 (sensor to gear), 2839 (runout), 2841 (cutter), 2853 (temperature/humidity sensor), 2865 (filament did not exit extruder), and unknown 2999. Error 2853 and unknown 2999 must not offer the CFS recovery command. The code's message must remain through unrelated status updates and clear only on an explicit zero error report.

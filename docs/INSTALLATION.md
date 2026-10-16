@@ -2,9 +2,9 @@
 
 Run the installer on the printer in the fully extracted release directory. Requirements: Python 3.8+, an existing writable Mainsail frontend and, for the live panel, the existing Creality WebSocket service on port 9999. No package downloads are performed. The installer does not ask for SSH credentials; connect using your existing access method first.
 
-## Download the v0.1.1 installation package
+## Download the v0.1.3 installation package
 
-Use [Mainsail-CFS-Panel-v0.1.1.zip](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.1/Mainsail-CFS-Panel-v0.1.1.zip) from the [v0.1.1 release](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.1). Connect from your computer using your existing account, replacing `PRINTER_IP` with the printer's address:
+Use [Mainsail-CFS-Panel-v0.1.3.zip](https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.3/Mainsail-CFS-Panel-v0.1.3.zip) from the [v0.1.3 release](https://github.com/military-cat/Mainsail-CFS-Panel/releases/tag/v0.1.3). Connect from your computer using your existing account, replacing `PRINTER_IP` with the printer's address:
 
 ```sh
 ssh root@PRINTER_IP
@@ -13,10 +13,10 @@ ssh root@PRINTER_IP
 In the printer's SSH shell, download and extract the package. These commands require `wget` and `unzip`; `&&` stops the sequence on failure:
 
 ```sh
-mkdir -p /mnt/UDISK/cfsail-install-v0.1.1 &&
-cd /mnt/UDISK/cfsail-install-v0.1.1 &&
-wget -O Mainsail-CFS-Panel-v0.1.1.zip https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.1/Mainsail-CFS-Panel-v0.1.1.zip &&
-unzip -o Mainsail-CFS-Panel-v0.1.1.zip &&
+mkdir -p /mnt/UDISK/cfsail-install-v0.1.3 &&
+cd /mnt/UDISK/cfsail-install-v0.1.3 &&
+wget -O Mainsail-CFS-Panel-v0.1.3.zip https://github.com/military-cat/Mainsail-CFS-Panel/releases/download/v0.1.3/Mainsail-CFS-Panel-v0.1.3.zip &&
+unzip -o Mainsail-CFS-Panel-v0.1.3.zip &&
 cd Mainsail-CFS-Panel &&
 sh install.sh
 ```

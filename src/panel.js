@@ -175,10 +175,52 @@
     if ('err' in data) next.error = data.err && typeof data.err === 'object' ? { ...data.err } : { key: null };
     return next;
   }
+  // Current Creality OS CFS codes: https://wiki.creality.com/en/printers-general-documents
+  // Keep legacy and unknown codes as raw reports; their meanings are not inferred.
+  const describedCfsErrors = {
+    2831: 'error.cfs.2831',
+    2832: 'error.cfs.2832',
+    2833: 'error.cfs.2833',
+    2834: 'error.cfs.2834',
+    2835: 'error.cfs.2835',
+    2836: 'error.cfs.2836',
+    2837: 'error.cfs.2837',
+    2838: 'error.cfs.2838',
+    2839: 'error.cfs.2839',
+    2840: 'error.cfs.2840',
+    2841: 'error.cfs.2841',
+    2843: 'error.cfs.2843',
+    2844: 'error.cfs.2844',
+    2846: 'error.cfs.2846',
+    2847: 'error.cfs.2847',
+    2848: 'error.cfs.2848',
+    2849: 'error.cfs.2849',
+    2850: 'error.cfs.2850',
+    2851: 'error.cfs.2851',
+    2852: 'error.cfs.2852',
+    2853: 'error.cfs.2853',
+    2854: 'error.cfs.2854',
+    2855: 'error.cfs.2855',
+    2856: 'error.cfs.2856',
+    2857: 'error.cfs.2857',
+    2858: 'error.cfs.2858',
+    2859: 'error.cfs.2859',
+    2860: 'error.cfs.2860',
+    2861: 'error.cfs.2861',
+    2862: 'error.cfs.2862',
+    2863: 'error.cfs.2863',
+    2864: 'error.cfs.2864',
+    2865: 'error.cfs.2865'
+  };
   function errorText(error) {
     const code = number(error?.key);
     if (code === 0 || !error) return '';
     const detail = typeof error.value === 'string' ? error.value.trim() : '';
+    if (describedCfsErrors[code]) {
+      const description = t(describedCfsErrors[code]);
+      return t('error.printer.detail', { code, detail: description }) +
+        (detail ? ' · ' + t('error.printer.raw', { detail }) : '');
+    }
     return t(detail ? 'error.printer.detail' : 'error.printer.screen', { code: code ?? t('error.code.unknown'), detail });
   }
   function nozzleText(telemetry) {
@@ -231,9 +273,17 @@
     return '';
   }
 
+  function cfsErrorCode(error) {
+    const code = number(error?.key);
+    // Known filament-path faults, in legacy and current K2 numbering. Unknown
+    // printer faults must not expose a CFS-specific movement command.
+    const known = [835,836,837,838,839,841,846,852,854,855,856,857,864,865];
+    return code !== null && known.includes(code >= 2000 ? code - 2000 : code) ? code : null;
+  }
+
   const api = { setLanguage, normalizeLanguage, t, normalizeColor, normalizeBoxes, normalizeSources, genericPresets, buildEdit, editConfirmed, editingAllowed, updateTelemetry,
     buildTransport, transportAllowed, applyMaterialState, transportConfirmed, isLoaded, statusFresh,
-    updateDisplayTelemetry, errorText, nozzleText, activityText, actionReason };
+    updateDisplayTelemetry, errorText, nozzleText, activityText, actionReason, cfsErrorCode };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else { root.CFSail = api; root.NoyeahCFS = api; }
   if (typeof document === 'undefined' || root.__noyeahCfsPanel) return;
@@ -247,14 +297,15 @@
   const panel = document.createElement('section');
   panel.lang = uiLanguage();
   panel.id = 'noyeah-cfs-panel';
-  panel.dataset.version = '0.1.0';
+  panel.dataset.version = '0.1.3';
   panel.dataset.product = 'CFSail';
   panel.className = 'v-card v-sheet theme--dark mb-3 mb-md-6';
   panel.setAttribute('aria-label', t('aria.panel'));
   let socket, reconnectTimer, saveTimer, queryTimer, motionTimer, info = {}, boxes = [], presets = [],
     socketConnected = false, cfsConnected = null, printing = false, busy = false,
     stateKnown = false, feedKnown = false, lastRenderKey = '',
-    selectedBox = 1, modal = null, pending = null, motion = null, feedState = null, printerError = false,
+    selectedBox = 1, modal = null, pending = null, motion = null, recovery = null, recoveryHold = false,
+    telemetryRevision = 0, feedState = null, printerError = false,
     lastBoxAt = 0, message = '', messageError = false, displayTelemetry = { feedState: null, nozzle: null, target: null, error: null };
 
   const style = document.createElement('style');
@@ -316,12 +367,16 @@
     #noyeah-cfs-panel .ncfs-notice.error{color:#ffb3a9}
     #noyeah-cfs-panel .ncfs-live-status{padding:9px 16px;border-top:1px solid #ffffff12;color:#c3c9cf;font-size:12px;line-height:1.65}
     #noyeah-cfs-panel .ncfs-live-status .busy{color:#ffcf7c}
-    #noyeah-cfs-panel .ncfs-live-status .error{color:#ffb3a9}
+    #noyeah-cfs-panel .ncfs-live-status .error{color:#ffb3a9;overflow-wrap:anywhere}
     #noyeah-cfs-panel .ncfs-status-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
     #noyeah-cfs-panel .ncfs-activity{flex:1;min-width:0}
     #noyeah-cfs-panel .ncfs-language-footer{display:flex;align-items:baseline;justify-content:flex-end;flex-shrink:0;gap:6px;color:#aeb3bd;font-size:12px}
     #noyeah-cfs-panel .ncfs-language-select{max-width:100%;font-size:12px;padding:5px 8px;border:1px solid #ffffff26;border-radius:5px;background:#292b2e;color:#ededed;color-scheme:dark;cursor:pointer}
     #noyeah-cfs-panel .ncfs-language-select:disabled{cursor:default;opacity:.5}
+    #noyeah-cfs-panel .ncfs-recovery{margin-top:9px}
+    #noyeah-cfs-panel .ncfs-recovery[hidden]{display:none}
+    #noyeah-cfs-panel .ncfs-recovery-button{padding:7px 11px;border:1px solid #e5b45b;border-radius:5px;background:#e5b45b12;color:#f1ca87}
+    #noyeah-cfs-panel .ncfs-recovery-note{margin-top:5px;color:#b8bbc1;font-size:11px;line-height:1.5}
     #ncfs-modal{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;background:#0009;font-family:inherit;color:#ededed}
     #ncfs-modal .ncfs-dialog{width:380px;max-width:100%;max-height:90vh;overflow:auto;background:#25272b;border:1px solid #ffffff22;border-radius:10px;box-shadow:0 15px 50px #0008;padding:22px}
     #ncfs-modal h2{font-size:18px;font-weight:600;margin:0 0 20px}
@@ -368,7 +423,7 @@
     const option = el('option', '', name); option.value = value; languageSelect.append(option);
   }
   languageSelect.onchange = () => {
-    if (modal || pending || motion) { languageSelect.value = languageMode; return; }
+    if (modal || pending || motion || recovery) { languageSelect.value = languageMode; return; }
     languageMode = languageSelect.value === 'auto' ? 'auto' : normalizeLanguage(languageSelect.value);
     setLanguage(languageMode === 'auto' ? mainsailLanguage() : languageMode);
     try { root.localStorage?.setItem('cfsail.languageMode', languageMode); } catch (_) { /* Selection still works for this visit. */ }
@@ -379,9 +434,14 @@
   const liveStatus = el('div', 'ncfs-live-status'); liveStatus.setAttribute('role', 'status');
   const statusRow = el('div', 'ncfs-status-row'), activityStatus = el('div', 'ncfs-activity');
   const nozzleStatus = el('div'), faultStatus = el('div', 'error');
+  const recoveryArea = el('div', 'ncfs-recovery'), recoveryButton = el('button', 'ncfs-recovery-button');
+  const recoveryNote = el('div', 'ncfs-recovery-note'); recoveryNote.id = 'ncfs-recovery-note';
+  recoveryButton.type = 'button'; recoveryButton.setAttribute('aria-describedby', recoveryNote.id);
+  recoveryButton.onclick = startRecovery;
+  recoveryArea.append(recoveryButton, recoveryNote);
   const noticeArea = el('div');
   statusRow.append(activityStatus, languageFooter);
-  liveStatus.append(statusRow, nozzleStatus, faultStatus);
+  liveStatus.append(statusRow, nozzleStatus, faultStatus, recoveryArea);
   panel.append(panelBody, liveStatus, noticeArea);
 
   // Adapted from upstream findTargetColumn. Prefer the dashboard's known panels.
@@ -421,7 +481,7 @@
   function reasonFor(slot, box, action) {
     return actionReason({ connected: socketConnected, cfsConnected: cfsConnected === true,
       boxConnected: !!box?.connected, stateKnown, feedKnown, fresh: telemetryFresh(), readOnly,
-      printing, busy, pending: !!pending || !!motion, printerError, error: displayTelemetry.error,
+      printing, busy, pending: !!pending || !!motion || !!recovery || !!recoveryHold, printerError, error: displayTelemetry.error,
       hasPresets: presets.length > 0 }, slot, action);
   }
   function canChoose(slot, box) {
@@ -430,7 +490,7 @@
   }
 
   function render() {
-    if (languageMode === 'auto' && !modal && !pending && !motion) {
+    if (languageMode === 'auto' && !modal && !pending && !motion && !recovery) {
       const nextLanguage = normalizeLanguage(mainsailLanguage());
       if (nextLanguage !== language) { setLanguage(nextLanguage); message = ''; messageError = false; }
     }
@@ -441,7 +501,7 @@
     modal?.updateButtons?.();
     const renderKey = JSON.stringify({ boxes, presetIds: presets.map(p => p.id), selectedBox, socketConnected,
       cfsConnected, printing, busy, stateKnown, feedKnown, fresh: telemetryFresh(), pending: !!pending,
-      motion, printerError, displayTelemetry, message, messageError, language, languageMode });
+      motion, recovery, recoveryHold, printerError, displayTelemetry, message, messageError, language, languageMode });
     if (renderKey === lastRenderKey) { mount(); return; }
     lastRenderKey = renderKey;
     const focusKey = panel.contains(document.activeElement) ? document.activeElement.dataset.slotKey : null;
@@ -453,7 +513,7 @@
     languageSelect.setAttribute('aria-label', t('language.label'));
     autoLanguageOption.textContent = t('language.auto');
     if (languageSelect.value !== languageMode) languageSelect.value = languageMode;
-    languageSelect.disabled = !!pending || !!motion;
+    languageSelect.disabled = !!pending || !!motion || !!recovery;
     panelBody.replaceChildren();
     const online = socketConnected && (selectedBox === 0 || cfsConnected === true) && !!box?.connected && telemetryFresh();
     const head = el('div', 'ncfs-head');
@@ -560,6 +620,11 @@
     nozzleStatus.textContent = telemetryFresh() ? nozzleText(displayTelemetry) : t('nozzle.unknown');
     const fault = errorText(displayTelemetry.error);
     faultStatus.textContent = fault; faultStatus.hidden = !fault;
+    recoveryArea.hidden = recoveryButton.hidden = cfsErrorCode(displayTelemetry.error) === null && !recovery && !recoveryHold;
+    recoveryButton.textContent = t('recovery.action');
+    const recoveryBlocked = recoveryReason();
+    recoveryButton.disabled = !!recoveryBlocked;
+    recoveryNote.textContent = recoveryBlocked || t('recovery.note');
     if (readOnly) panelBody.append(el('div', 'ncfs-hint', t('status.readonly')));
     noticeArea.replaceChildren();
     if (message) {
@@ -766,6 +831,89 @@
     if (socket?.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ method: 'get', params: { boxsInfo: 1,
       ReqPrinterPara: 1, ...(includeMaterials ? { reqMaterials: 1 } : {}) } }));
   }
+  function recoveryReason() {
+    if (readOnly) return t('reason.readonly');
+    if (!socketConnected || socket?.readyState !== WebSocket.OPEN) return t('reason.disconnected');
+    if (!stateKnown || !feedKnown) return t('reason.status');
+    if (!telemetryFresh()) return t('reason.stale');
+    if (cfsConnected !== true || !boxes.some(b => b.id > 0 && b.connected)) return t('reason.cfs');
+    if (recoveryHold) return t('recovery.uncertain');
+    if (pending || motion || recovery) return t('reason.pending');
+    if (cfsErrorCode(displayTelemetry.error) === null) return t('recovery.unsupported');
+    return '';
+  }
+  function finishRecovery(ok, text, uncertain = false) {
+    const operation = recovery;
+    if (!operation) return;
+    recovery = null;
+    clearTimeout(operation.requestTimer); clearTimeout(operation.resultTimer);
+    operation.controller.abort();
+    recoveryHold = uncertain ? operation : false; message = text; messageError = !ok; render();
+  }
+  function recoveryConfirmed(operation) {
+    return operation?.cleared && operation.idle && operation.box && telemetryFresh() && cfsConnected === true && !busy &&
+      operation.boxIds.length > 0 && operation.boxIds.every(id => {
+        const box = (info.materialBoxs || []).find(b => Number(b.id) === id && Number(b.type) === 0);
+        return Number(box?.state) === 1 && Array.isArray(box.materials) && [0,1,2,3].every(index => {
+          const material = box.materials.find(m => Number(m.id) === index);
+          return material && [0,1,2].includes(number(material.state));
+        });
+      });
+  }
+  function confirmRecovery() {
+    if (recovery?.phase === 'waiting' && recoveryConfirmed(recovery)) finishRecovery(true, t('recovery.done'));
+    else if (recoveryHold && recoveryConfirmed(recoveryHold)) {
+      recoveryHold = false; message = t('recovery.done'); messageError = false; render();
+    }
+  }
+  async function startRecovery() {
+    if (recoveryReason()) return;
+    const operation = { phase: 'checking', code: cfsErrorCode(displayTelemetry.error), sent: false,
+      revision: telemetryRevision, controller: new AbortController(), cleared: false, idle: false, box: false,
+      boxIds: boxes.filter(b => b.id > 0 && b.connected).map(b => b.id) };
+    recovery = operation; message = t('recovery.checking'); messageError = false; render();
+    operation.requestTimer = setTimeout(() => {
+      if (recovery === operation) finishRecovery(false,
+        t(operation.sent ? 'recovery.uncertain' : 'recovery.preflight.timeout'), operation.sent);
+    }, 15000);
+    async function jsonRequest(path, options) {
+      const response = await root.fetch(new URL(path, location.href).href,
+        { ...options, credentials: 'same-origin', signal: operation.controller.signal });
+      const body = await response.json();
+      if (!response.ok || body?.error) {
+        operation.rejected = true;
+        throw new Error(String(body?.error?.message || t('recovery.http', { code: response.status })).slice(0, 300));
+      }
+      return body?.result;
+    }
+    try {
+      const result = await jsonRequest('/printer/objects/query?print_stats&pause_resume&webhooks', { method: 'GET' });
+      if (recovery !== operation) return;
+      if (!socketConnected || !telemetryFresh() || cfsErrorCode(displayTelemetry.error) !== operation.code ||
+          cfsConnected !== true || !boxes.some(b => b.id > 0 && b.connected)) throw new Error(t('recovery.changed'));
+      const status = result?.status;
+      if (status?.webhooks?.state !== 'ready') throw new Error(t('recovery.notready'));
+      const job = status.print_stats?.state, paused = status.pause_resume?.is_paused;
+      if (typeof paused !== 'boolean' || !['standby','complete','cancelled','error','paused'].includes(job) ||
+          (job === 'paused') !== paused) throw new Error(t('recovery.paused'));
+      operation.phase = 'sending'; operation.sent = true; operation.revision = telemetryRevision;
+      const accepted = await jsonRequest('/printer/gcode/script', { method: 'POST',
+        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ script: 'BOX_ERROR_RESUME_PROCESS' }) });
+      if (recovery !== operation) return;
+      if (accepted !== 'ok') throw new Error(t('recovery.response'));
+      operation.phase = 'waiting'; clearTimeout(operation.requestTimer);
+      message = t('recovery.accepted'); messageError = false;
+      operation.resultTimer = setTimeout(() => {
+        if (recovery === operation) finishRecovery(false, t('recovery.uncertain'), true);
+      }, 90000);
+      request(); confirmRecovery(); render();
+    } catch (error) {
+      if (recovery !== operation) return;
+      const uncertain = operation.sent && !operation.rejected;
+      finishRecovery(false, uncertain ? t('recovery.uncertain') :
+        t('recovery.failed', { detail: String(error.message || error).slice(0, 300) }), uncertain);
+    }
+  }
   function connect() {
     if (socket && socket.readyState < 2) return;
     socket = new WebSocket(wsUrl);
@@ -777,7 +925,8 @@
       if (String(event.data).includes('heart_beat')) { socket.send('ok'); return; }
       let data; try { data = JSON.parse(event.data); } catch (_) { return; }
       if (!data || typeof data !== 'object') return;
-      if ('feedState' in data && !motion && !pending) { message = ''; messageError = false; }
+      telemetryRevision++;
+      if ('feedState' in data && !motion && !pending && !recovery && !recoveryHold) { message = ''; messageError = false; }
       displayTelemetry = updateDisplayTelemetry(displayTelemetry, data);
       if ('cfsConnect' in data) cfsConnected = Number(data.cfsConnect) > 0;
       if ('feedState' in data) feedState = number(data.feedState);
@@ -789,6 +938,13 @@
       if (data.boxState) {
         const box = (info.materialBoxs || []).find(b => Number(b.id) === Number(data.boxState.id));
         if (box) { Object.assign(box, data.boxState); boxes = normalizeSources(info); }
+      }
+      const recovering = recovery?.sent ? recovery : recoveryHold;
+      if (recovering && telemetryRevision > recovering.revision) {
+        if ('err' in data) recovering.cleared = number(data.err?.key) === 0;
+        if ('feedState' in data) recovering.idle = [0,3,14].includes(number(data.feedState));
+        if ('boxsInfo' in data) recovering.box = true;
+        confirmRecovery();
       }
       if (pending && data.err && Number(data.err.key) !== 0) finishSave(false, errorText(displayTelemetry.error));
       else if (pending && 'boxsInfo' in data && editConfirmed(info, pending)) finishSave(true, t('editor.saved'));
@@ -808,6 +964,8 @@
     socket.onerror = () => { socketConnected = false; render(); };
     socket.onclose = () => {
       socketConnected = false; closeModal();
+      if (recovery) finishRecovery(false, t('recovery.disconnected'), recovery.sent);
+      if (recoveryHold) Object.assign(recoveryHold, { cleared: false, idle: false, box: false, revision: telemetryRevision });
       if (pending) finishSave(false, t('editor.disconnected'));
       if (motion) finishTransport(false, t('transport.disconnected'));
       render(); clearTimeout(reconnectTimer); reconnectTimer = setTimeout(connect, 3000);
@@ -818,6 +976,7 @@
   const layoutObserver = new MutationObserver(mount);
   layoutObserver.observe(document.body, { childList: true, subtree: true });
   root.addEventListener('pagehide', () => {
+    if (recovery) { clearTimeout(recovery.requestTimer); clearTimeout(recovery.resultTimer); recovery.controller.abort(); }
     clearInterval(poll); clearTimeout(reconnectTimer); clearTimeout(saveTimer); clearTimeout(queryTimer); clearTimeout(motionTimer);
     layoutObserver.disconnect(); if (socket) { socket.onclose = null; socket.close(); }
     closeModal();

@@ -32,12 +32,12 @@ def build():
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(output.replace('\r\n', '\n').encode('utf-8'))
     manifest = {
-        'schema': 1, 'version': '0.1.2', 'project': 'Mainsail-CFS-Panel',
+        'schema': 1, 'version': '0.1.3', 'project': 'Mainsail-CFS-Panel',
         'languages': list(LANGUAGES),
         'assets': {name: hashlib.sha256((ROOT / 'assets' / name).read_bytes()).hexdigest()
                    for name in ('cfs-panel.js', 'cfs.png')}
     }
-    (ROOT / 'release.json').write_text(json.dumps(manifest, sort_keys=True, indent=2) + '\n', encoding='utf-8')
+    (ROOT / 'release.json').write_bytes((json.dumps(manifest, sort_keys=True, indent=2) + '\n').encode('utf-8'))
     return target
 
 

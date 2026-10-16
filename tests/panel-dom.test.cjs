@@ -5,43 +5,7 @@ const vm = require('node:vm');
 const path = require('node:path');
 const fixture = require('./synthetic-printer.json');
 
-// Minimal DOM boundary for the actual browser bundle; sockets never contact a device.
-class Element {
-  constructor(tag, document) { this.tagName=tag; this.document=document; this.children=[]; this.attributes={}; this.dataset={}; this.style={setProperty(){}}; this.classList={add: cls => this.className=(this.className || '')+' '+cls}; this.textContent=''; }
-  append(...nodes) { for (const node of nodes) { node.remove(); node.parentElement=this; this.children.push(node); } }
-  prepend(node) { node.remove(); node.parentElement=this; this.children.unshift(node); }
-  replaceChildren(...nodes) { this.children.forEach(node=>node.parentElement=null); this.children=[]; this.append(...nodes); }
-  remove() { if(this.parentElement) this.parentElement.children=this.parentElement.children.filter(node=>node!==this); this.parentElement=null; }
-  setAttribute(key,value) { this.attributes[key]=String(value); }
-  getAttribute(key) { return this.attributes[key]; }
-  addEventListener() {}
-  contains(node) { return this===node || this.children.some(child=>child.contains(node)); }
-  focus() { this.document.activeElement=this; }
-  all() { return this.children.flatMap(child=>[child,...child.all()]); }
-  querySelectorAll(selector) { return this.all().filter(node=>selector.split(',').some(part=>{
-    const match=part.trim();
-    if(match[0]==='#') return node.id===match.slice(1);
-    if(match[0]==='.') return (node.className || '').split(' ').includes(match.slice(1));
-    if(match[0]==='[') { const [,name,value]=match.match(/^\[([^=\]]+)(?:="([^"]+)")?\]$/)||[]; const actual=name?.startsWith('data-') ? node.dataset[name.slice(5).replace(/-([a-z])/g,(_,c)=>c.toUpperCase())] : node.attributes[name]; return actual!==undefined && (value===undefined || String(actual)===value); }
-    return node.tagName===match;
-  })); }
-  querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
-}
-function browser(lang, mount='cfsail', storage, mainsailLanguage) {
-  const document={currentScript:{src:'http://localhost/cfsail/cfs-panel.js',dataset:{lang}},activeElement:null};
-  document.createElement=tag=>new Element(tag,document); document.createElementNS=(_,tag)=>document.createElement(tag);
-  document.body=document.createElement('body'); document.head=document.createElement('head');
-  document.querySelector=selector=>document.body.querySelector(selector); document.querySelectorAll=selector=>document.body.querySelectorAll(selector);
-  if (mainsailLanguage) { const app=document.createElement('div');app.id='app';app.__vue__={$store:{state:{gui:{general:{language:mainsailLanguage}}}}};document.body.append(app); }
-  const host=document.createElement('div'); host.dataset[mount==='cfsail' ? 'cfsailMount' : 'noyeahCfsMount']=''; document.body.append(host);
-  const sockets=[];
-  class Socket { static OPEN=1; constructor(url){ this.url=url; this.readyState=1; this.sent=[]; sockets.push(this); } send(data){this.sent.push(data);} close(){} }
-  const context={document,localStorage:storage,location:{href:'http://localhost/',hostname:'localhost',pathname:'/'},URL,WebSocket:Socket,MutationObserver:class {observe(){} disconnect(){}},setTimeout(){return 1;},clearTimeout(){},setInterval(){return 1;},clearInterval(){},addEventListener(){}};
-  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../assets/cfs-panel.js'),'utf8'),context);
-  const socket=sockets[0]; socket.onopen();
-  socket.onmessage({data:JSON.stringify({...fixture,cfsConnect:1,nozzleTemp:25,targetNozzleTemp:0})});
-  return {document,host,socket,context};
-}
+const {browser}=require('./browser-fixture.cjs');
 for (const lang of ['en','ko','ja','zh','es']) test(`actual ${lang} UI localizes dialogs, ARIA, feedback and keeps wire values`,()=>{
   const {document,host,socket}=browser(lang);
   const catalog=JSON.parse(fs.readFileSync(path.join(__dirname,'../locales/panel',lang+'.json')));
@@ -152,5 +116,7 @@ for (const lang of ['en','ko','ja','zh','es']) test(`${lang} transport waits for
   assert.equal(panel.querySelector('.ncfs-notice').textContent,catalog['transport.load.done'].replace('{slot}','1A'));
   assert.ok(panel.querySelector('[data-slot-key="1:0"]').getAttribute('aria-label').includes(catalog['slot.loaded']));
   socket.onmessage({data:JSON.stringify({err:{key:2864,value:'Device 原文'}})});
-  assert.equal(panel.querySelector('.ncfs-live-status').children[2].textContent,catalog['error.printer.detail'].replace('{code}','2864').replace('{detail}','Device 原文'));
+  const fault=panel.querySelector('.ncfs-live-status').children[2].textContent;
+  assert.ok(fault.includes('2864') && fault.includes('Device 原文'));
+  assert.ok(fault.includes(catalog['error.cfs.2864']));
 });

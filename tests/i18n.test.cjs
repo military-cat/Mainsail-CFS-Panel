@@ -40,7 +40,8 @@ test('localized errors keep printer descriptions and codes verbatim', () => {
   assert.equal(typeof api.setLanguage, 'function');
   for (const lang of ['en','ko','ja','zh','es']) {
     api.setLanguage(lang);
-    assert.ok(api.errorText({key:2864,value:'Original 原文 <b>'}).includes('2864 · Original 原文 <b>'));
+    const report=api.errorText({key:2864,value:'Original 原文 <b>'});
+    assert.ok(report.includes('2864') && report.includes('Original 原文 <b>'));
     assert.equal(api.errorText({key:0,value:'unused'}), '');
     assert.throws(() => api.buildEdit({}, {}, '#000000'), err => !!err.message && !err.message.includes('undefined'));
   }

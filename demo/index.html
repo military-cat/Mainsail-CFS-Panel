@@ -24,6 +24,29 @@
     <option value="es">Español</option>
   </select>
   <p id="demo-note"></p>
+  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;width:100%">
+    <label for="demo-error-code">오류 종류 / Error</label>
+    <select id="demo-error-code">
+      <option value="2865">2865 · 익스트루더 이탈 실패</option>
+      <option value="2836">2836 · 허브 → 익스트루더 센서</option>
+      <option value="2837">2837 · 센서 → 압출 기어</option>
+      <option value="2839">2839 · 필라멘트 소진</option>
+      <option value="2841">2841 · 커터 걸림</option>
+      <option value="2853">2853 · 온습도 센서</option>
+      <option value="2999">2999 · 미등록 코드 / Unknown</option>
+    </select>
+    <label for="demo-recovery-mode">Recovery test</label>
+    <select id="demo-recovery-mode">
+      <option value="success">복구 성공 / Success</option>
+      <option value="reject">명령 거절 / Rejected</option>
+      <option value="disconnect">연결 끊김 / Disconnected</option>
+      <option value="unconfirmed">완료 보고 없음 / No confirmation</option>
+      <option value="printing">출력 중 / Printing</option>
+    </select>
+    <button id="demo-create-error" type="button">CFS 오류 만들기</button>
+    <button id="demo-reset" type="button">데모 초기화</button>
+    <span id="demo-recovery-result" role="status" style="font-size:12px"></span>
+  </div>
 </header>
 <main><div data-cfsail-mount></div></main>
 <script>
@@ -42,6 +65,16 @@
   const chooser = document.getElementById('demo-language');
   chooser.value = demoLanguage;
   chooser.onchange = () => { location.search = '?lang=' + chooser.value; };
+  const result = document.getElementById('demo-recovery-result');
+  document.getElementById('demo-create-error').onclick = async () => {
+    const response = await fetch('/__demo/recovery', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode: document.getElementById('demo-recovery-mode').value, code: Number(document.getElementById('demo-error-code').value) }) });
+    result.textContent = response.ok ? '모의 오류 ' + document.getElementById('demo-error-code').value + ' 발생 · 실제 프린터에는 연결하지 않습니다.' : 'Simulation failed';
+  };
+  document.getElementById('demo-reset').onclick = async () => {
+    const response = await fetch('/__demo/reset', { method: 'POST' });
+    if (response.ok) location.reload();
+  };
   const panelScript = document.createElement('script');
   panelScript.src = '/assets/cfs-panel.js';
   panelScript.dataset.lang = demoLanguage;
