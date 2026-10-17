@@ -14,7 +14,7 @@ On a connected printer, CFSail displays the **actual CFS internal temperature (Â
 
 The external spool's tab and name are always **Ext.**, in every language. Editable filaments can be assigned a printer-provided Generic material and color. A save is confirmed against the printer's response. External-spool loading/unloading remains on the printer touchscreen.
 
-### What has been checked
+### What has been checked?
 
 | Printer | Verified on the inspected installation | Remaining hardware checks |
 | --- | --- | --- |
